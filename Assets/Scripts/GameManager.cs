@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         else
         {
             specialEventCounter--;
-            if (specialEventCounter == 0)
+            if (specialEventCounter <= 0)
             {
                 // TODO: play special sound
                 SwapTilesEvent?.Invoke(sender, EventArgs.Empty);
