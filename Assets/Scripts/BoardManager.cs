@@ -5,22 +5,25 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-
     [SerializeField] private float spacing;
-    [SerializeField] private int width;
-    [SerializeField] private int height;
     [SerializeField] private Tile tilePrefab;
 
+    public event EventHandler GameOverEvent;
+
+    private int pairCount;
+    private int effectPeriod;
+    private int tilesToNextEffect;
     private List<Tile> tiles;
     private Tile flippedTile1, flippedTile2;
-
-    public event EventHandler MatchFoundEvent;
 
     private readonly System.Random random = new();
 
     // Start is called before the first frame update
     void Start()
     {
+        pairCount = PlayerPrefs.GetInt(SettingsConstants.PairCount.ToString());
+        effectPeriod = PlayerPrefs.GetInt(SettingsConstants.EffectPeriod.ToString());
+        tilesToNextEffect = effectPeriod;
         flippedTile1 = null;
         flippedTile2 = null;
         GenerateGrid();
@@ -31,37 +34,45 @@ public class BoardManager : MonoBehaviour
         tiles = new List<Tile>();
 
         List<int> numbers = new();
-        numbers.AddRange(Enumerable.Range(0, width * height / 2));
-        numbers.AddRange(Enumerable.Range(0, width * height / 2));
-
+        numbers.AddRange(Enumerable.Range(0, pairCount));
+        numbers.AddRange(Enumerable.Range(0, pairCount));
         numbers = numbers.OrderBy(x => random.Next()).ToList();
 
-        for (int i = 0; i < width; i++)
+        int numRows = Mathf.FloorToInt(Mathf.Sqrt(pairCount));
+        int row = 0;
+        int col = 0;
+        int tilesLeft = pairCount * 2;
+        do
         {
-            for (int j = 0; j < height; j++)
+            if (row > numRows)
             {
-                Tile spawnedTile = Instantiate(tilePrefab, new Vector3(spacing * i, spacing * j), Quaternion.identity, this.transform);
-                spawnedTile.TileNumber = numbers.ElementAt(0);
-                numbers.RemoveAt(0);
-                spawnedTile.OnMouseLeftClickEvent += OnTileLeftClickedEvent;
-                tiles.Add(spawnedTile);
+                row = 0;
+                col++;
             }
-        }
+            Tile spawnedTile = Instantiate(tilePrefab, new Vector3(spacing * row, spacing * col), Quaternion.identity, this.transform);
+            spawnedTile.TileNumber = numbers.ElementAt(0);
+            numbers.RemoveAt(0);
+            spawnedTile.MouseLeftClickEvent += OnTileLeftClickedEvent;
+            tiles.Add(spawnedTile);
+            row++;
+            tilesLeft--;
+        } while (tilesLeft > 0);
 
-        transform.position = new Vector3(transform.position.x - spacing * width / 2f + 0.5f, transform.position.y - spacing * height / 2f + 0.5f, transform.position.z);
+        // Center board
+        transform.position = new Vector3(transform.position.x - spacing * row / 2f - 0.5f, transform.position.y - spacing * col / 2f - 0.5f, transform.position.z);
     }
 
-    public Tile GetRandomTile()
+    /// <summary>
+    /// Get a random unflipped tile.
+    /// </summary>
+    /// <returns>A random unflipped tile.</returns>
+    private Tile GetRandomUnflippedTile()
     {
-        return tiles.ElementAt(random.Next(tiles.Count));
+        List<Tile> tempUnflippedTileList = tiles.FindAll(x => !x.IsOpen);
+        return tempUnflippedTileList.ElementAt(random.Next(tempUnflippedTileList.Count));
     }
 
-    public int GetNumberOfTiles()
-    {
-        return tiles.Count;
-    }
-
-    public void OnTileLeftClickedEvent(object sender, EventArgs e)
+    private void OnTileLeftClickedEvent(object sender, EventArgs e)
     {
         // If 2 tiles were flipped before and they did not match then flip them back.
         if (flippedTile1 != null && flippedTile2 != null)
@@ -95,17 +106,37 @@ public class BoardManager : MonoBehaviour
             // TODO: play match found sound
             flippedTile1 = null;
             flippedTile2 = null;
-            MatchFoundEvent?.Invoke(this, EventArgs.Empty);
+            MatchFound();
         }
     }
 
-    public void OnSwapRandomTilesEvent(object sender, EventArgs e)
+    private void MatchFound()
     {
-        Tile a = GetRandomTile();
+        pairCount--;
+        if (pairCount <= 0)
+        {
+            // TODO: play win sound
+            GameOverEvent.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            tilesToNextEffect--;
+            if (tilesToNextEffect <= 0)
+            {
+                // TODO: play special sound
+                SwapRandomTiles();
+                tilesToNextEffect = effectPeriod;
+            }
+        }
+    }
+
+    private void SwapRandomTiles()
+    {
+        Tile a = GetRandomUnflippedTile();
         Tile b;
         do
         {
-            b = GetRandomTile();
+            b = GetRandomUnflippedTile();
         } while (a == b);
         Vector3 posA = a.transform.position;
         Vector3 posB = b.transform.position;

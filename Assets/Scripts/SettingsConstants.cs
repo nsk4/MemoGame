@@ -1,0 +1,5 @@
+enum SettingsConstants
+{
+    PairCount,
+    EffectPeriod
+}

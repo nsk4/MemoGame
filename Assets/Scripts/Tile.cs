@@ -12,7 +12,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     [SerializeField] private RotationAnimation rotationAnimation;
     [SerializeField] private SpinMoveAnimation spinMoveAnimation;
 
-    public event EventHandler OnMouseLeftClickEvent;
+    public event EventHandler MouseLeftClickEvent;
     public bool IsOpen { get; set; }
 
     private int tileNumber;
@@ -38,7 +38,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            OnMouseLeftClickEvent?.Invoke(this, EventArgs.Empty);
+            MouseLeftClickEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 
