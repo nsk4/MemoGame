@@ -21,8 +21,8 @@ public class BoardManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pairCount = PlayerPrefs.GetInt(SettingsConstants.PairCount.ToString());
-        effectPeriod = PlayerPrefs.GetInt(SettingsConstants.EffectPeriod.ToString());
+        pairCount = PlayerPrefs.GetInt(SettingsConstants.PairCount, SettingsConstants.PairCountDefaultValue);
+        effectPeriod = PlayerPrefs.GetInt(SettingsConstants.EffectPeriod, SettingsConstants.EffectPeriodDefaultValue);
         tilesToNextEffect = effectPeriod;
         flippedTile1 = null;
         flippedTile2 = null;

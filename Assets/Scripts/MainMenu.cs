@@ -19,8 +19,8 @@ public class MainMenu : MonoBehaviour
     {
         pairCount = minPairs;
         effectCount = minEffect;
-        PlayerPrefs.SetInt(SettingsConstants.PairCount.ToString(), pairCount);
-        PlayerPrefs.SetInt(SettingsConstants.EffectPeriod.ToString(), effectCount);
+        PlayerPrefs.SetInt(SettingsConstants.PairCount, pairCount);
+        PlayerPrefs.SetInt(SettingsConstants.EffectPeriod, effectCount);
 
         pairsCountSettingsText?.SetText(pairCount.ToString());
         effectCountSettingsText?.SetText(effectCount.ToString());
