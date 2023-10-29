@@ -1,29 +1,32 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private int pairCount;
     [SerializeField] private int minPairs;
     [SerializeField] private int maxPairs;
     [SerializeField] private TextMeshProUGUI pairsCountSettingsText;
+    [SerializeField] private Slider pairsCountSettingsSlider;
 
+    [SerializeField] private int effectCount;
     [SerializeField] private int minEffect;
     [SerializeField] private int maxEffect;
     [SerializeField] private TextMeshProUGUI effectCountSettingsText;
-
-    private int pairCount;
-    private int effectCount;
+    [SerializeField] private Slider effectCountSettingsSlider;
 
     private void Start()
     {
-        pairCount = minPairs;
-        effectCount = minEffect;
+        FindObjectOfType<AudioManager>().Play("MenuTheme");
         PlayerPrefs.SetInt(SettingsConstants.PairCount, pairCount);
         PlayerPrefs.SetInt(SettingsConstants.EffectPeriod, effectCount);
 
-        pairsCountSettingsText?.SetText(pairCount.ToString());
-        effectCountSettingsText?.SetText(effectCount.ToString());
+        pairsCountSettingsText.SetText(pairCount.ToString());
+        pairsCountSettingsSlider.value = (pairCount - minPairs) / (float)(maxPairs - minPairs);
+        effectCountSettingsText.SetText(effectCount.ToString());
+        effectCountSettingsSlider.value = (effectCount - minEffect) / (float)(maxEffect - minEffect);
     }
 
     public void OnPlayButtonClicked()
@@ -40,15 +43,15 @@ public class MainMenu : MonoBehaviour
     public void OnPairCountSettingsValueChange(float value)
     {
         pairCount = Mathf.RoundToInt((maxPairs - minPairs) * value) + minPairs;
-        pairsCountSettingsText?.SetText(pairCount.ToString());
+        pairsCountSettingsText.SetText(pairCount.ToString());
         PlayerPrefs.SetInt(SettingsConstants.PairCount.ToString(), pairCount);
         if (effectCount < pairCount)
         {
-            effectCountSettingsText?.SetText(effectCount.ToString());
+            effectCountSettingsText.SetText(effectCount.ToString());
         }
         else
         {
-            effectCountSettingsText?.SetText("Off");
+            effectCountSettingsText.SetText("Off");
         }
     }
 
@@ -58,11 +61,11 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetInt(SettingsConstants.EffectPeriod.ToString(), effectCount);
         if (effectCount < pairCount)
         {
-            effectCountSettingsText?.SetText(effectCount.ToString());
+            effectCountSettingsText.SetText(effectCount.ToString());
         }
         else
         {
-            effectCountSettingsText?.SetText("Off");
+            effectCountSettingsText.SetText("Off");
         }
     }
 }

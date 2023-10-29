@@ -44,14 +44,15 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void Flip()
     {
-        // TODO: play flip sound
+        FindObjectOfType<AudioManager>().Play("TileFlip");
         IsOpen = !IsOpen;
         rotationAnimation.Rotate180();
     }
 
     public void Move(Vector3 destination)
     {
-        // TODO: play move sound
+        // TODO: sync sound and swapping
+        FindObjectOfType<AudioManager>().Play("TileSpin");
         spinMoveAnimation.SpinMove(destination);
     }
 }
