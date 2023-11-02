@@ -1,11 +1,9 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class Tile : MonoBehaviour, IPointerClickHandler
+public class Tile : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject highlight;
     [SerializeField] private TextMeshProUGUI text;
 
@@ -18,12 +16,28 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     private int tileNumber;
     public int TileNumber { get { return tileNumber; } set { tileNumber = value; text.SetText(value.ToString()); } }
 
+    private bool mouseDown;
+
     void Start()
     {
+        mouseDown = false;
         IsOpen = false;
         transform.Rotate(Vector3.up, 180.0f); // Close the tile
     }
 
+    void OnMouseDown()
+    {
+        mouseDown = true;
+    }
+
+    void OnMouseUp()
+    {
+        if (mouseDown)
+        {
+            MouseLeftClickEvent?.Invoke(this, EventArgs.Empty);
+            mouseDown = false;
+        }
+    }
     void OnMouseEnter()
     {
         highlight.SetActive(true);
@@ -31,15 +45,8 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     void OnMouseExit()
     {
+        mouseDown = false;
         highlight.SetActive(false);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            MouseLeftClickEvent?.Invoke(this, EventArgs.Empty);
-        }
     }
 
     public void Flip()

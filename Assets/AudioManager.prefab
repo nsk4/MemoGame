@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05a657cf44a08f4a833cf251c434258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myList: []
   sounds:
   - name: Click
     clip: {fileID: 8300000, guid: 10ccc43a50463e44faf0a56759d9a7bc, type: 3}
