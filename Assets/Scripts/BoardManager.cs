@@ -10,8 +10,7 @@ public class BoardManager : MonoBehaviour
 
     public event EventHandler GameOverEvent;
 
-    private int pairCount;
-    private int effectPeriod;
+    private int pairsLeft;
     private int tilesToNextEffect;
     private List<Tile> tiles;
     private Tile flippedTile1, flippedTile2;
@@ -21,9 +20,8 @@ public class BoardManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pairCount = PlayerPrefs.GetInt(SettingsConstants.PairCount, SettingsConstants.PairCountDefaultValue);
-        effectPeriod = PlayerPrefs.GetInt(SettingsConstants.EffectPeriod, SettingsConstants.EffectPeriodDefaultValue);
-        tilesToNextEffect = effectPeriod;
+        pairsLeft = Settings.PairCount;
+        tilesToNextEffect = Settings.EffectPeriod;
         flippedTile1 = null;
         flippedTile2 = null;
         GenerateGrid();
@@ -34,14 +32,14 @@ public class BoardManager : MonoBehaviour
         tiles = new List<Tile>();
 
         List<int> numbers = new();
-        numbers.AddRange(Enumerable.Range(0, pairCount));
-        numbers.AddRange(Enumerable.Range(0, pairCount));
+        numbers.AddRange(Enumerable.Range(0, Settings.PairCount));
+        numbers.AddRange(Enumerable.Range(0, Settings.PairCount));
         numbers = numbers.OrderBy(x => random.Next()).ToList();
 
-        int numRows = Mathf.FloorToInt(Mathf.Sqrt(pairCount));
+        int numRows = Mathf.FloorToInt(Mathf.Sqrt(Settings.PairCount));
         int row = 0;
         int col = 0;
-        int tilesLeft = pairCount * 2;
+        int tilesLeft = Settings.PairCount * 2;
         do
         {
             if (row > numRows)
@@ -112,8 +110,8 @@ public class BoardManager : MonoBehaviour
 
     private void MatchFound()
     {
-        pairCount--;
-        if (pairCount <= 0)
+        pairsLeft--;
+        if (pairsLeft <= 0)
         {
             // TODO: play win sound
             GameOverEvent.Invoke(this, EventArgs.Empty);
@@ -125,7 +123,7 @@ public class BoardManager : MonoBehaviour
             {
                 // TODO: play special sound
                 SwapRandomTiles();
-                tilesToNextEffect = effectPeriod;
+                tilesToNextEffect = Settings.EffectPeriod;
             }
         }
     }
