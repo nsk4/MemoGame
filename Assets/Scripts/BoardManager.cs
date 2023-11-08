@@ -89,6 +89,7 @@ public class BoardManager : MonoBehaviour
         }
 
         // Flip the tile and check if it is the 1st flipped tile.
+        // TODO: add tracking of number of flips
         tile.Flip();
         if (flippedTile1 == null)
         {
