@@ -1,14 +1,29 @@
-using UnityEngine;
+using System.Collections.Generic;
+using System.IO;
 
-public class ScoreTracker : MonoBehaviour
+public class ScoreTracker
 {
-    // game time
-    // number of tiles
-    // special effect
-    // calc score from above
+    private static readonly string scoreFilePath = "Assets/Resources/scores.txt";
 
-    // load from file
-    // store to file
+    private List<Score> scoreList;
 
-    // statically persist
+    public ScoreTracker()
+    {
+        scoreList = new List<Score>();
+
+        StreamReader reader = new StreamReader(scoreFilePath);
+        while (!reader.EndOfStream)
+        {
+            scoreList.Add(Score.FromString(reader.ReadLine()));
+        }
+        reader.Close();
+    }
+
+    public void AddScore(Score s)
+    {
+        scoreList.Add(s);
+        StreamWriter writer = new StreamWriter(scoreFilePath, true);
+        writer.WriteLine(s.ToString());
+        writer.Close();
+    }
 }

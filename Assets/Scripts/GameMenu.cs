@@ -10,6 +10,7 @@ public class GameMenu : MonoBehaviour
     [SerializeField] private GameObject gameOverMenu;
     [SerializeField] private TextMeshProUGUI gameOverMenuTime;
     [SerializeField] private TextMeshProUGUI gameTimeText;
+    [SerializeField] private TextMeshProUGUI gameScoreText;
 
     private Stopwatch gameTime;
 
@@ -31,14 +32,16 @@ public class GameMenu : MonoBehaviour
 
     public void OnGameOverEvent(object sender, EventArgs e)
     {
+        gameTime.Stop();
         AudioManager audioManager = FindObjectOfType<AudioManager>();
         audioManager.Stop("GameTheme");
         audioManager.Play("VictoryAlert");
         audioManager.PlayDelayed("VictoryTheme", 3);
         gameOverMenu.SetActive(true);
         gameOverMenuTime.SetText(gameTime.Elapsed.ToString("hh\\:mm\\:ss"));
-
-        // TODO: add score to score list
+        Score s = new Score(Settings.PlayerName, gameTime.Elapsed, Settings.PairCount, Settings.EffectPeriod, boardManager.GetTotalFlipCount());
+        gameScoreText.SetText(s.CalculateScore().ToString());
+        new ScoreTracker().AddScore(s);
     }
 
     public void OnQuitButtonClicked()

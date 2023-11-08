@@ -15,6 +15,8 @@ public class BoardManager : MonoBehaviour
     private List<Tile> tiles;
     private Tile flippedTile1, flippedTile2;
 
+    private int totalFlipCount;
+
     private readonly System.Random random = new();
 
     // Start is called before the first frame update
@@ -24,6 +26,7 @@ public class BoardManager : MonoBehaviour
         tilesToNextEffect = Settings.EffectPeriod;
         flippedTile1 = null;
         flippedTile2 = null;
+        totalFlipCount = 0;
         GenerateGrid();
     }
 
@@ -89,7 +92,7 @@ public class BoardManager : MonoBehaviour
         }
 
         // Flip the tile and check if it is the 1st flipped tile.
-        // TODO: add tracking of number of flips
+        totalFlipCount++;
         tile.Flip();
         if (flippedTile1 == null)
         {
@@ -141,5 +144,10 @@ public class BoardManager : MonoBehaviour
         Vector3 posB = b.transform.position;
         a.Move(posB);
         b.Move(posA);
+    }
+
+    public int GetTotalFlipCount()
+    {
+        return totalFlipCount;
     }
 }

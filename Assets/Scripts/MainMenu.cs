@@ -5,18 +5,17 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private TMPro.TMP_InputField playerNameSettingsText;
 
-    [SerializeField] private int pairCount;
     [SerializeField] private int minPairs;
     [SerializeField] private int maxPairs;
     [SerializeField] private TextMeshProUGUI pairsCountSettingsText;
     [SerializeField] private Slider pairsCountSettingsSlider;
 
-    [SerializeField] private int effectCount;
     [SerializeField] private int minEffect;
     [SerializeField] private int maxEffect;
-    [SerializeField] private TextMeshProUGUI effectCountSettingsText;
-    [SerializeField] private Slider effectCountSettingsSlider;
+    [SerializeField] private TextMeshProUGUI effectPeriodSettingsText;
+    [SerializeField] private Slider effectPeriodSettingsSlider;
 
     [SerializeField] private int minVolume;
     [SerializeField] private int maxVolume;
@@ -24,18 +23,20 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Slider volumeSettingsSlider;
 
 
+
     private void Start()
     {
         FindObjectOfType<AudioManager>().Play("MenuTheme");
 
-        Settings.PairCount = pairCount;
-        Settings.EffectPeriod = effectCount;
+        // Load settings from ini file and initialize settings menu.
+        Settings.LoadFromFile();
+        playerNameSettingsText.text = Settings.PlayerName;
         pairsCountSettingsText.SetText(Settings.PairCount.ToString());
         pairsCountSettingsSlider.value = (Settings.PairCount - minPairs) / (float)(maxPairs - minPairs);
-        effectCountSettingsText.SetText(Settings.EffectPeriod.ToString());
-        effectCountSettingsSlider.value = (Settings.EffectPeriod - minEffect) / (float)(maxEffect - minEffect);
-        volumeSettingsText.SetText(maxVolume.ToString());
-        volumeSettingsSlider.value = 1;
+        effectPeriodSettingsText.SetText(Settings.EffectPeriod.ToString());
+        effectPeriodSettingsSlider.value = (Settings.EffectPeriod - minEffect) / (float)(maxEffect - minEffect);
+        volumeSettingsText.SetText((Mathf.RoundToInt((maxVolume - minVolume) * Settings.Volume) + minVolume).ToString());
+        volumeSettingsSlider.value = Settings.Volume;
     }
 
     public void OnPlayButtonClicked()
@@ -55,30 +56,41 @@ public class MainMenu : MonoBehaviour
         pairsCountSettingsText.SetText(Settings.PairCount.ToString());
         if (Settings.EffectPeriod < Settings.PairCount)
         {
-            effectCountSettingsText.SetText(Settings.EffectPeriod.ToString());
+            effectPeriodSettingsText.SetText(Settings.EffectPeriod.ToString());
         }
         else
         {
-            effectCountSettingsText.SetText("Off");
+            effectPeriodSettingsText.SetText("Off");
         }
     }
 
-    public void OnEffectCountSettingsValueChange(float value)
+    public void OnEffectPeriodSettingsValueChange(float value)
     {
         Settings.EffectPeriod = Mathf.RoundToInt((maxEffect - minEffect) * value) + minEffect;
         if (Settings.EffectPeriod < Settings.PairCount)
         {
-            effectCountSettingsText.SetText(Settings.EffectPeriod.ToString());
+            effectPeriodSettingsText.SetText(Settings.EffectPeriod.ToString());
         }
         else
         {
-            effectCountSettingsText.SetText("Off");
+            effectPeriodSettingsText.SetText("Off");
         }
     }
 
     public void OnVolumeSettingsValueChange(float value)
     {
+        Settings.Volume = value;
         AudioListener.volume = value;
         volumeSettingsText.SetText((Mathf.RoundToInt((maxVolume - minVolume) * value) + minVolume).ToString());
+    }
+
+    public void OnPlayerNameSettingsValueEndEdit(string value)
+    {
+        Settings.PlayerName = value;
+    }
+
+    public void OnBackSettingsButtonClicked()
+    {
+        Settings.StoreToFile();
     }
 }
