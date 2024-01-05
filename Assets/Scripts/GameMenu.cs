@@ -39,7 +39,7 @@ public class GameMenu : MonoBehaviour
         audioManager.PlayDelayed("VictoryTheme", 3);
         gameOverMenu.SetActive(true);
         gameOverMenuTime.SetText(gameTime.Elapsed.ToString("hh\\:mm\\:ss"));
-        Score s = new Score(Settings.PlayerName, gameTime.Elapsed, Settings.PairCount, Settings.EffectPeriod, boardManager.GetTotalFlipCount());
+        Score s = new(Settings.PlayerName, gameTime.Elapsed, Settings.PairCount, Settings.EffectPeriod, boardManager.GetTotalFlipCount());
         gameScoreText.SetText(s.CalculateScore().ToString());
         new ScoreTracker().AddScore(s);
     }

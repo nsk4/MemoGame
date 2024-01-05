@@ -32,7 +32,7 @@ public class Score
 
     override public string ToString()
     {
-        return String.Format("{0}||{1}||{2}||{3}||{4}", PlayerName, GameTime.ToString(), PairCount, EffectPeriod, FlipCount);
+        return string.Format("{0}||{1}||{2}||{3}||{4}", PlayerName, GameTime.ToString(), PairCount, EffectPeriod, FlipCount);
     }
 
     public static Score FromString(string str)

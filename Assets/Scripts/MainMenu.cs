@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -5,6 +7,7 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    private const int MaxPlayerNameLength = 15;
     [SerializeField] private TMPro.TMP_InputField playerNameSettingsText;
 
     [SerializeField] private int minPairs;
@@ -22,6 +25,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI volumeSettingsText;
     [SerializeField] private Slider volumeSettingsSlider;
 
+    [SerializeField] private TextMeshProUGUI scoreboardTableText;
 
 
     private void Start()
@@ -86,11 +90,37 @@ public class MainMenu : MonoBehaviour
 
     public void OnPlayerNameSettingsValueEndEdit(string value)
     {
+        if (value.Length > MaxPlayerNameLength)
+        {
+            value = value.Substring(0, MaxPlayerNameLength);
+            playerNameSettingsText.text = value;
+        }
         Settings.PlayerName = value;
     }
 
     public void OnBackSettingsButtonClicked()
     {
         Settings.StoreToFile();
+    }
+
+    public void OnOpenScoreboardButtonClicked()
+    {
+        List<Score> scores = new ScoreTracker().GetScoreList().OrderByDescending(x => x.CalculateScore()).Take(10).ToList();
+        string scoreboardTable = "<mspace=15.0 em>"; // Force monospace font
+        scoreboardTable += string.Format("{0,15} | {1,6} | {2,8} | {3,5} | {4,5} | {5,6}{6}",
+            "Name", "Score", "Time", "Flips", "Pairs", "Effect", System.Environment.NewLine);
+        foreach (Score score in scores)
+        {
+            scoreboardTable += string.Format("{0,15} | {1,6} | {2,8} | {3,5} | {4,5} | {5,6}{6}",
+                score.PlayerName.Substring(0, System.Math.Min(score.PlayerName.Length, MaxPlayerNameLength)),
+                System.Math.Round(score.CalculateScore(), 2),
+                score.GameTime.ToString("hh\\:mm\\:ss"),
+                score.FlipCount,
+                score.PairCount,
+                score.EffectPeriod,
+                System.Environment.NewLine);
+        }
+
+        scoreboardTableText.SetText(scoreboardTable);
     }
 }

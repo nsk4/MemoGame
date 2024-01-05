@@ -26,4 +26,11 @@ public class ScoreTracker
         writer.WriteLine(s.ToString());
         writer.Close();
     }
+
+    public List<Score> GetScoreList()
+    {
+        return scoreList;
+    }
+
+
 }
