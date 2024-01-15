@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Contain game sound properties.
+/// </summary>
 [System.Serializable]
 public class Sound
 {

@@ -3,23 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Manage board tiles and grid generation.
+/// </summary>
 public class BoardManager : MonoBehaviour
 {
     [SerializeField] private float spacing;
     [SerializeField] private Tile tilePrefab;
 
+    /// <summary>
+    /// Event signaling that the game is over.
+    /// </summary>
     public event EventHandler GameOverEvent;
 
     private int pairsLeft;
     private int tilesToNextEffect;
     private List<Tile> tiles;
     private Tile flippedTile1, flippedTile2;
-
     private int totalFlipCount;
 
     private readonly System.Random random = new();
 
-    // Start is called before the first frame update
     void Start()
     {
         pairsLeft = Settings.PairCount;
@@ -30,6 +34,9 @@ public class BoardManager : MonoBehaviour
         GenerateGrid();
     }
 
+    /// <summary>
+    /// Generate grid by instantiating tiles.
+    /// </summary>
     private void GenerateGrid()
     {
         tiles = new List<Tile>();
@@ -97,6 +104,11 @@ public class BoardManager : MonoBehaviour
         return tempUnflippedTileList.ElementAt(random.Next(tempUnflippedTileList.Count));
     }
 
+    /// <summary>
+    /// Event triggered on tile left click.
+    /// </summary>
+    /// <param name="sender">Event sender</param>
+    /// <param name="e">Event parameters</param>
     private void OnTileLeftClickedEvent(object sender, EventArgs e)
     {
         // If 2 tiles were flipped before and they did not match then flip them back.
@@ -136,6 +148,9 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Logic executed when the matching tiles are found.
+    /// </summary>
     private void MatchFound()
     {
         pairsLeft--;
@@ -156,6 +171,9 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Swap position of 2 random unopened tiles. 
+    /// </summary>
     private void SwapRandomTiles()
     {
         Tile a = GetRandomUnflippedTile();
@@ -170,6 +188,10 @@ public class BoardManager : MonoBehaviour
         b.Move(posA);
     }
 
+    /// <summary>
+    /// Get the total flip count for the game.
+    /// </summary>
+    /// <returns>Total flip count of the game.</returns>
     public int GetTotalFlipCount()
     {
         return totalFlipCount;

@@ -1,3 +1,6 @@
+/// <summary>
+/// Static class that contains game settings.
+/// </summary>
 public static class Settings
 {
     private static readonly string settingsFilePath = "Assets/Resources/settings.ini";
@@ -7,6 +10,9 @@ public static class Settings
     public static int EffectPeriod = 1;
     public static float Volume = 1.0f;
 
+    /// <summary>
+    /// Load settings from an INI file.
+    /// </summary>
     public static void LoadFromFile()
     {
         INIParser iniParser = new INIParser();
@@ -18,6 +24,9 @@ public static class Settings
         iniParser.Close();
     }
 
+    /// <summary>
+    /// Store settings to an INI file.
+    /// </summary>
     public static void StoreToFile()
     {
         INIParser iniParser = new INIParser();

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Idle object movement animation.
+/// </summary>
 public class IdleMovementAnimation : MonoBehaviour
 {
     [SerializeField] private float speed;

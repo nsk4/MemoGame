@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Object flip rotation animation.
+/// </summary>
 public class RotationAnimation : MonoBehaviour
 {
 

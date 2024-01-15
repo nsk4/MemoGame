@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handle main menu logic.
+/// </summary>
 public class MainMenu : MonoBehaviour
 {
     private const int MaxPlayerNameLength = 15;
@@ -43,17 +46,27 @@ public class MainMenu : MonoBehaviour
         volumeSettingsSlider.value = Settings.Volume;
     }
 
+    /// <summary>
+    /// Start the game.
+    /// </summary>
     public void OnPlayButtonClicked()
     {
         SceneManager.LoadScene(1);
     }
 
+    /// <summary>
+    /// Quit the game.
+    /// </summary>
     public void OnQuitButtonClicked()
     {
         Debug.Log("Quitting the game");
         Application.Quit();
     }
 
+    /// <summary>
+    /// Set the number of tile pairs in the game.
+    /// </summary>
+    /// <param name="value">Number of tile pairs</param>
     public void OnPairCountSettingsValueChange(float value)
     {
         Settings.PairCount = Mathf.RoundToInt((maxPairs - minPairs) * value) + minPairs;
@@ -68,6 +81,10 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set the period of the tile swap effect.
+    /// </summary>
+    /// <param name="value">Effect period</param>
     public void OnEffectPeriodSettingsValueChange(float value)
     {
         Settings.EffectPeriod = Mathf.RoundToInt((maxEffect - minEffect) * value) + minEffect;
@@ -81,6 +98,10 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Change game sound volume.
+    /// </summary>
+    /// <param name="value">Game sound volume</param>
     public void OnVolumeSettingsValueChange(float value)
     {
         Settings.Volume = value;
@@ -88,6 +109,10 @@ public class MainMenu : MonoBehaviour
         volumeSettingsText.SetText((Mathf.RoundToInt((maxVolume - minVolume) * value) + minVolume).ToString());
     }
 
+    /// <summary>
+    /// Change player name. Name can be at most MaxPlayerNameLength characters long.
+    /// </summary>
+    /// <param name="value">Player name</param>
     public void OnPlayerNameSettingsValueEndEdit(string value)
     {
         if (value.Length > MaxPlayerNameLength)
@@ -98,11 +123,17 @@ public class MainMenu : MonoBehaviour
         Settings.PlayerName = value;
     }
 
+    /// <summary>
+    /// Store game settings to a file.
+    /// </summary>
     public void OnBackSettingsButtonClicked()
     {
         Settings.StoreToFile();
     }
 
+    /// <summary>
+    /// Open game scoreboard window.
+    /// </summary>
     public void OnOpenScoreboardButtonClicked()
     {
         List<Score> scores = new ScoreTracker().GetScoreList().OrderByDescending(x => x.CalculateScore()).Take(10).ToList();

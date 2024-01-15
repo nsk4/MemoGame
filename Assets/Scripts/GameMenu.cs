@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Handle game menu logic.
+/// </summary>
 public class GameMenu : MonoBehaviour
 {
     [SerializeField] private BoardManager boardManager;
@@ -30,6 +33,11 @@ public class GameMenu : MonoBehaviour
         gameTimeText.SetText(gameTime.Elapsed.ToString("hh\\:mm\\:ss"));
     }
 
+    /// <summary>
+    /// Event triggered on game over.
+    /// </summary>
+    /// <param name="sender">Event sender</param>
+    /// <param name="e">Event parameters</param>
     public void OnGameOverEvent(object sender, EventArgs e)
     {
         gameTime.Stop();
@@ -44,16 +52,25 @@ public class GameMenu : MonoBehaviour
         new ScoreTracker().AddScore(s);
     }
 
+    /// <summary>
+    /// Stop game and return back to main menu.
+    /// </summary>
     public void OnQuitButtonClicked()
     {
         SceneManager.LoadScene(0);
     }
 
+    /// <summary>
+    /// Pause game.
+    /// </summary>
     public void PauseGame()
     {
         gameTime.Stop();
     }
 
+    /// <summary>
+    /// Resume game.
+    /// </summary>
     public void ResumeGame()
     {
         gameTime.Start();

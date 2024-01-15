@@ -2,6 +2,9 @@ using System;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Tile object containing number and other various properties.
+/// </summary>
 public class Tile : MonoBehaviour
 {
     [SerializeField] private GameObject highlight;
@@ -49,6 +52,9 @@ public class Tile : MonoBehaviour
         highlight.SetActive(false);
     }
 
+    /// <summary>
+    /// Flip the tile.
+    /// </summary>
     public void Flip()
     {
         FindObjectOfType<AudioManager>().Play("TileFlip");
@@ -56,6 +62,10 @@ public class Tile : MonoBehaviour
         rotationAnimation.Rotate180();
     }
 
+    /// <summary>
+    /// Start the tile spin move animation to the given destination.
+    /// </summary>
+    /// <param name="destination">Destination to move tile to.</param>
     public void Move(Vector3 destination)
     {
         // TODO: sync sound and swapping

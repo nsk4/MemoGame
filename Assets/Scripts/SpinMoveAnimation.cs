@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Object spin and move animation.
+/// </summary>
 public class SpinMoveAnimation : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed;
@@ -42,6 +45,10 @@ public class SpinMoveAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Start the spin move followed by movign the object to the destination.
+    /// </summary>
+    /// <param name="destination">Destination to move to</param>
     public void SpinMove(Vector3 destination)
     {
         rotationRemaining += 360.0f * rotationCount;
