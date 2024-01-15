@@ -33,34 +33,58 @@ public class BoardManager : MonoBehaviour
     private void GenerateGrid()
     {
         tiles = new List<Tile>();
-
         List<int> numbers = new();
         numbers.AddRange(Enumerable.Range(0, Settings.PairCount));
         numbers.AddRange(Enumerable.Range(0, Settings.PairCount));
         numbers = numbers.OrderBy(x => random.Next()).ToList();
 
-        int numRows = Mathf.FloorToInt(Mathf.Sqrt(Settings.PairCount));
-        int row = 0;
-        int col = 0;
-        int tilesLeft = Settings.PairCount * 2;
-        do
+        foreach (Vector3 position in GenerateTilePositions(numbers.Count))
         {
-            if (row > numRows)
-            {
-                row = 0;
-                col++;
-            }
-            Tile spawnedTile = Instantiate(tilePrefab, new Vector3(spacing * row, spacing * col), Quaternion.identity, this.transform);
+            Tile spawnedTile = Instantiate(tilePrefab, position, Quaternion.identity, this.transform);
             spawnedTile.TileNumber = numbers.ElementAt(0);
             numbers.RemoveAt(0);
             spawnedTile.MouseLeftClickEvent += OnTileLeftClickedEvent;
             tiles.Add(spawnedTile);
-            row++;
-            tilesLeft--;
-        } while (tilesLeft > 0);
+        }
+    }
 
-        // Center board
-        transform.position = new Vector3(transform.position.x - spacing * row / 2f - 0.5f, transform.position.y - spacing * col / 2f - 0.5f, transform.position.z);
+    /// <summary>
+    /// Generate tile positions in a circle. Each outer circle contains 6 more tiles than the inner one. if tiles in the outermost circle cannot finish the circle they will be evenly spread around the circle.
+    /// </summary>
+    /// <param name="totalTiles">Total positions to generate.</param>
+    /// <returns>List of tile positions. The Z axis is set to 0.</returns>
+    private List<Vector3> GenerateTilePositions(int totalTiles)
+    {
+        List<Vector3> positions = new List<Vector3>();
+        int numConcentricCircles = 0;
+        int currentTileCount = 0;
+
+        while (currentTileCount < totalTiles)
+        {
+            numConcentricCircles++;
+            float angleStep = 2 * (float)Math.PI / (numConcentricCircles * 6);
+            // If the remainder of the tiles do not fit into the final circle then spread it out;
+            if (totalTiles - currentTileCount < numConcentricCircles * 6)
+            {
+                angleStep = 2 * (float)Math.PI / (totalTiles - currentTileCount);
+            }
+
+            for (int i = 0; i < numConcentricCircles * 6; i++)
+            {
+                if (currentTileCount >= totalTiles)
+                {
+                    break;
+                }
+                float angle = i * angleStep;
+                float currentRadius = numConcentricCircles * 1.5f; // 1.5 for spacing scaling
+                float x = currentRadius * (float)Math.Cos(angle);
+                float y = currentRadius * (float)Math.Sin(angle);
+                positions.Add(new Vector3(x, y, 0));
+                currentTileCount++;
+            }
+        }
+
+        return positions;
     }
 
     /// <summary>
