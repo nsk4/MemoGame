@@ -1,40 +1,47 @@
 using System.Collections.Generic;
-using System.IO;
+using UnityEngine;
 
 /// <summary>
 /// Score tracker for managing scores.
 /// </summary>
 public class ScoreTracker
 {
-    private static readonly string scoreFilePath = "Assets/Resources/scores.txt";
-
     private List<Score> scoreList;
 
     /// <summary>
-    /// Construct a new score tracher.
+    /// Construct a new score tracher and read any existing scores from PlayerPrefs.
     /// </summary>
     public ScoreTracker()
     {
         scoreList = new List<Score>();
 
-        StreamReader reader = new StreamReader(scoreFilePath);
-        while (!reader.EndOfStream)
+
+        string allScores = PlayerPrefs.GetString("Scores", "");
+        foreach (string scoreText in allScores.Split('\n'))
         {
-            scoreList.Add(Score.FromString(reader.ReadLine()));
+            if (scoreText?.Length == 0)
+            {
+                continue;
+            }
+            scoreList.Add(Score.FromString(scoreText));
         }
-        reader.Close();
     }
 
     /// <summary>
-    /// Add score to the list of scores and save it to a file.
+    /// Add score to the list of scores and save it to PlayerPrefs.
     /// </summary>
     /// <param name="s"></param>
     public void AddScore(Score s)
     {
         scoreList.Add(s);
-        StreamWriter writer = new StreamWriter(scoreFilePath, true);
-        writer.WriteLine(s.ToString());
-        writer.Close();
+
+        string allScores = "";
+        foreach (Score score in scoreList)
+        {
+            allScores += score.ToString() + "\n";
+        }
+        PlayerPrefs.SetString("Scores", allScores);
+        PlayerPrefs.Save();
     }
 
     /// <summary>
