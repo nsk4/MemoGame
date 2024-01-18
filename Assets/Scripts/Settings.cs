@@ -15,7 +15,7 @@ public static class Settings
     public static void LoadFromFile()
     {
         PlayerName = PlayerPrefs.GetString("PlayerName", "SuperMemory");
-        PairCount = PlayerPrefs.GetInt("PairCount", 1);
+        PairCount = PlayerPrefs.GetInt("PairCount", 4);
         EffectPeriod = PlayerPrefs.GetInt("EffectPeriod", 1);
         Volume = PlayerPrefs.GetFloat("Volume", 1.0f);
     }
